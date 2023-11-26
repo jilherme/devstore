@@ -3,8 +3,19 @@ import { Product } from '@/data/types/product'
 import Image from 'next/image'
 import Link from 'next/link'
 
+/**
+ * Cache & Memoization
+ * A Memoização é uma funcionalidade do React que evita requisições duplicadas durante o carregamento de uma página.
+ * Quando usamos Server Components, o React automaticamente impede que uma requisição seja feita mais de uma vez.
+ * No entanto, a Memoização não se aplica a requisições feitas em páginas diferentes. Para evitar requisições duplicadas em páginas diferentes, é necessário utilizar o Cache.
+ */
+
 async function getFeaturedProducts(): Promise<Product[]> {
-  const response = await api('/products/featured')
+  const response = await api('/products/featured', {
+    next: {
+      revalidate: 60 * 60, // 1 hour
+    },
+  })
   const products = await response.json()
 
   return products
